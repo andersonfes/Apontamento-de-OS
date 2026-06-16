@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Apontamento de OS/datasets/Koncz - Fluig/dsStartProcessOS.js&apos; to &apos;dsStartProcessRest.js&apos;" description="Rename resource &apos;dsStartProcessOS.js&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="datasets/Koncz - Fluig/dsStartProcessOS.js" name="dsStartProcessRest.js" stamp="1781478578570" updateReferences="true"/>
+</session>

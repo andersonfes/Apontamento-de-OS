@@ -1,0 +1,171 @@
+function createDataset(fields, constraints, sortFields) {
+
+    var dataset = DatasetBuilder.newDataset();
+
+    dataset.addColumn("processInstanceId");
+    dataset.addColumn("status");
+    dataset.addColumn("erro");
+
+    try {
+
+        log.info("#### INICIO DATASET dsStartProcessOS ####");
+
+        var nomeTecnico = "teste";
+        var nomeCliente = "teste";
+        var tipoAgendamento = "teste";
+        var data = "01/01/2024";
+        var horaInicial = "08:00";
+        var horaFinal = "17:00";
+        var totalHoras = "8";
+        var tarefasRealizadas = "teste";
+
+        // 🔥 CONSTRAINTS
+        log.info("#### verificando constraints ####");
+        log.dir(constraints);
+
+        /* if (constraints != null) {
+            for (var i = 0; i < constraints.length; i++) {
+
+                var field = constraints[i].fieldName;
+                var value = constraints[i].initialValue;
+
+                log.info("Campo: " + field + " | Valor: " + value);
+
+                if (field == "nomeTecnico") nomeTecnico = value;
+                if (field == "nomeCliente") nomeCliente = value;
+                if (field == "tipoAgendamento") tipoAgendamento = value;
+                if (field == "data") data = value;
+                if (field == "horaInicial") horaInicial = value;
+                if (field == "horaFinal") horaFinal = value;
+                if (field == "totalHoras") totalHoras = value;
+                if (field == "tarefasRealizadas") tarefasRealizadas = value;
+            }
+        } */
+
+        log.info("#### valores tratados ####");
+        log.info("nomeTecnico: " + nomeTecnico);
+        log.info("nomeCliente: " + nomeCliente);
+        log.info("tipoAgendamento: " + tipoAgendamento);
+        log.info("data: " + data);
+        log.info("horaInicial: " + horaInicial);
+        log.info("horaFinal: " + horaFinal);
+        log.info("totalHoras: " + totalHoras);
+
+        // 🔥 SERVIÇO
+        log.info("#### iniciando service ####");
+
+        var service = ServiceManager.getService('ECMWorkflowEngineService');
+        var serviceHelper = service.getBean();
+
+        var serviceLocator = service.instantiate(
+            'com.totvs.technology.ecm.workflow.ws.ECMWorkflowEngineServiceService'
+        );
+
+        var workflowEngine = serviceLocator.getWorkflowEngineServicePort();
+
+        log.info("#### service instanciado com sucesso ####");
+
+        // 🔥 AUTENTICAÇÃO
+        var usuario = "admin";
+        var senha = "senha#123";
+
+        log.info("#### autenticando serviço ####");
+
+        workflowEngine = serviceHelper.getBasicAuthenticatedClient(
+            workflowEngine,
+            "com.totvs.technology.ecm.workflow.ws.ECMWorkflowEngineService",
+            usuario,
+            senha
+        );
+
+        log.info("#### autenticado com sucesso ####");
+
+        // 🔥 DADOS
+        var cardData = new java.util.HashMap();
+
+        cardData.put("nomeTecnico", nomeTecnico);
+        cardData.put("nomeCliente", nomeCliente);
+        cardData.put("tipoAgendamento", tipoAgendamento);
+        cardData.put("data", data);
+        cardData.put("horaInicial", horaInicial);
+        cardData.put("horaFinal", horaFinal);
+        cardData.put("totalHoras", totalHoras);
+        cardData.put("tarefasRealizadas", tarefasRealizadas);
+
+        log.info("#### cardData montado ####");
+        log.dir(cardData);
+
+        var colleagues = new java.util.ArrayList();
+        colleagues.add(usuario);
+
+        var descricao = "OS - " + nomeCliente + " - " + data;
+
+        log.info("#### iniciando processo ####");
+        log.info("processo: apontamentodeOS");
+        log.info("descricao: " + descricao);
+
+        // 🔥 START PROCESS
+        var process = workflowEngine.startProcess(
+            "apontamentodeOS",
+            usuario,
+            colleagues,
+            descricao,
+            "",
+            cardData,
+            false,
+            null,
+            null
+        );
+
+        log.info("#### processo iniciado ####");
+        log.dir(process);
+
+        var numero = process.get(0).getProcessInstanceId();
+
+        log.info("#### numero da solicitacao #### " + numero);
+
+        dataset.addRow([numero, "OK", ""]);
+
+        log.info("#### FIM DATASET SUCESSO ####");
+
+    } catch (e) {
+
+        log.error("#### ERRO NO DATASET ####");
+
+        var mensagem = "";
+        var linha = "";
+        var coluna = "";
+        var stack = "";
+
+        try { mensagem = e.message; } catch (ex) { }
+        try { linha = e.lineNumber; } catch (ex) { }
+        try { coluna = e.columnNumber; } catch (ex) { }
+        try { stack = e.stack; } catch (ex) { }
+
+        // 🔥 log detalhado
+        log.error("Mensagem: " + mensagem);
+        log.error("Linha: " + linha);
+        log.error("Coluna: " + coluna);
+        log.error("Stack: " + stack);
+
+        // 🔥 log bruto do erro (muito importante)
+        try {
+            log.dir(e);
+        } catch (ex) {
+            log.error("Não foi possível dar log.dir no erro");
+        }
+
+        // 🔥 retorno estruturado no dataset
+        dataset.addColumn("erro");
+        dataset.addColumn("linha");
+        dataset.addColumn("stack");
+
+        dataset.addRow([
+            mensagem || "Erro desconhecido",
+            linha || "N/A",
+            stack || "Sem stack"
+        ]);
+    }
+
+    return dataset;
+}

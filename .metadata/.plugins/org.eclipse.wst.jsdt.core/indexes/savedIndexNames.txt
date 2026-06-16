@@ -1,0 +1,18 @@
+INDEX VERSION 1.4+C:\Users\Anderson\OneDrive - Bee IT\Meus projetos\Workspace\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3320039046.index
+888605566.index
+3810490233.index
+158648209.index
+1215822087.index
+647169389.index
+815247021.index
+2999567244.index
+2909542958.index
+2371236564.index
+4084902910.index
+1056984815.index
+1440867205.index
+3066295675.index
+1120755799.index
+1934730861.index
+3583804060.index
