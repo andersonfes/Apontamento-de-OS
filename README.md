@@ -116,7 +116,8 @@ Não há templates de e-mail definidos.
 ## 🔄 Processo
 
 <div align="center">
-    <img width="700" src="./forms/Apontamento de OS/ApontamentoOS.png" alt="Fluxo do Processo Apontamento de Ordem de Serviços">
+    <p><img width=700px src="./forms/Apontamento de OS/ApontamentoOS.png" alt="Imagem do processo Apontamento de Ordem de Serviços"></p>
+    <h3>Detalhamento do Processo de Apontamento de Ordem de Serviços</h3>
 </div>
 
 ### Fluxo do Processo
